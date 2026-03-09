@@ -114,12 +114,12 @@ function App() {
                     className="bg-red-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-red-700 transition duration-200">
                     Admin
                   </button>
-                  <button
+                  {/* <button
                     onClick={() => navigate('/login')}
                     className="bg-red-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-red-700 transition duration-200"
                   >
                     Logout
-                  </button>
+                  </button> */}
                 </div>
               </div>
               {/* Mobile dropdown menu */}
@@ -135,12 +135,12 @@ function App() {
                     className="bg-red-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-red-700 transition duration-200">
                     Admin
                   </button>
-                  <button
+                  {/* <button
                     onClick={() => { navigate('/login'); setNavOpen(false); }}
                     className="bg-red-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-red-700 transition duration-200"
                   >
                     Logout
-                  </button>
+                  </button> */}
                 </div>
               )}
             </nav>

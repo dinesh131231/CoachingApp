@@ -204,7 +204,7 @@ export const setupRoutes = (app) => {
           role: foundUser.role
         },
         process.env.JWT_SECRET || 'your_jwt_secret',
-        { expiresIn: '1m' }
+        { expiresIn: '30m' }
       );
 
       return res.status(200).json({

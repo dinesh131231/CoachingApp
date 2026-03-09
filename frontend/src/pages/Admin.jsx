@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+const BACKEND_PORT_URL = import.meta.env.BACKEND_PORT_URL || 'http://localhost:5000';
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import Note from '../component/Note'
@@ -26,7 +27,7 @@ function Admin() {
   // Fetch links from backend
   const fetchLinks = async () => {
     try {
-      const res = await fetch('http://localhost:5000/Links');
+      const res = await fetch(`${BACKEND_PORT_URL}/Links`);
       const data = await res.json();
       if (res.ok) {
         setLinks(data.links);
@@ -54,7 +55,7 @@ function Admin() {
     setLinkLoading(true);
     setLinkMessage("");
     try {
-      const response = await fetch("http://localhost:5000/links", {
+      const response = await fetch(`${BACKEND_PORT_URL}/links`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url: link, lname: linkName })
@@ -80,7 +81,7 @@ function Admin() {
   // Delete link handler
   const handleLinkDelete = async (id) => {
     try {
-      const response = await fetch(`http://localhost:5000/Links/${id}`, {
+      const response = await fetch(`${BACKEND_PORT_URL}/Links/${id}`, {
         method: "DELETE"
       });
       const data = await response.json();
@@ -103,7 +104,7 @@ function Admin() {
     }
     setNoticeLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/notices', {
+      const response = await fetch(`${BACKEND_PORT_URL}/notices`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text: notice })
@@ -125,7 +126,7 @@ function Admin() {
   // Fetch notices from backend
   const fetchNotices = async () => {
     try {
-      const res = await fetch('http://localhost:5000/notices');
+      const res = await fetch(`${BACKEND_PORT_URL}/notices`);
       const data = await res.json();
       if (res.ok) {
         setNotices(data.notices);
@@ -194,7 +195,7 @@ function Admin() {
 
   const fetchFiles = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/files")
+      const res = await axios.get(`${BACKEND_PORT_URL}/files`)
       setFiles(res.data.data)
     } catch (err) {
       console.log(err)
@@ -225,7 +226,7 @@ function Admin() {
     formData.append("file", file);
 
     try {
-      const response = await fetch("http://localhost:5000/uploads", {
+      const response = await fetch(`${BACKEND_PORT_URL}/uploads`, {
         method: "POST",
         body: formData,
       });
@@ -252,7 +253,7 @@ function Admin() {
   const handleNoticeDelete = async (id) => {
     if (!window.confirm('Delete this notice?')) return;
     try {
-      const res = await fetch(`http://localhost:5000/notices/${id}`, { method: 'DELETE' });
+      const res = await fetch(`${BACKEND_PORT_URL}/notices/${id}`, { method: 'DELETE' });
       if (res.ok) {
         fetchNotices();
       }
@@ -346,7 +347,7 @@ function Admin() {
     if (!window.confirm("Delete this file?")) return
 
     try {
-      await axios.delete(`http://localhost:5000/files/${id}`)
+      await axios.delete(`${BACKEND_PORT_URL}/files/${id}`)
       fetchFiles()
     } catch (err) {
       console.log(err)

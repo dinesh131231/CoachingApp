@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+const BACKEND_PORT_URL = import.meta.env.BACKEND_PORT_URL || 'http://localhost:5000';
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import Note from './component/Note'
@@ -31,7 +32,7 @@ function App() {
 
   const fetchLinks = async () => {
     try {
-      const res = await fetch('http://localhost:5000/Links');
+      const res = await fetch(`${BACKEND_PORT_URL}/Links`);
       const data = await res.json();
 
       if (res.ok && data.links) {
@@ -45,7 +46,7 @@ function App() {
 
   const fetchFiles = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/files");
+      const res = await axios.get(`${BACKEND_PORT_URL}/files`);
       setFiles(res.data.data);          // ✅ fixed
       setLoading(false);
       console.log(res.data)
@@ -173,7 +174,7 @@ function App() {
                       {/* Square Card Container */}
                       <div className="w-full h-20 bg-gray-100  items-center justify-center overflow-hidden relative hidden">
                         <iframe
-                          src={`http://localhost:5000/${file.path.replace(/\\/g, "/")}`}
+                          src={`${BACKEND_PORT_URL}/${file.path.replace(/\\/g, "/")}`}
                           alt="file"
                           className="w-auto h-auto object-fill  hover:scale-105 transition-transform"
                         ></iframe>
@@ -223,7 +224,7 @@ function App() {
                     <div className="flex-1 w-full h-full overflow-hidden flex items-center justify-center">
 
                       <iframe
-                        src={`http://localhost:5000/${selectedFile.path.replace(/\\/g, "/")}`}
+                        src={`${BACKEND_PORT_URL}/${selectedFile.path.replace(/\\/g, "/")}`}
                         alt="file"
                         className="w-full h-full border-0"
                         onError={(e) => {

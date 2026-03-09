@@ -86,9 +86,7 @@ const user = userModel;
 export const setupRoutes = (app) => {
 
 
-  app.get("/", (req, res) => {
-  res.send("Server is running successfully 🚀");
-});
+  
 
   // POST endpoint for user and admin signup
   app.post("/signup", async (req, res) => {

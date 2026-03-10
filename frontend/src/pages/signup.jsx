@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 
-const API_URL = import.meta.env.BACKEND_PORT_URL || 'http://localhost:5000';
+const API_URL = import.meta.env.VITE_BACKEND_PORT_URL || 'http://localhost:5000';
 
 const Signup = () => {
   const [formData, setFormData] = useState({

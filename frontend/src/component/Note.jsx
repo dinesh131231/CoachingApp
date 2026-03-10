@@ -6,7 +6,7 @@ const Note = (props) => {
 
   useEffect(() => {
     if (!props.name) {
-      fetch((import.meta.env.BACKEND_PORT_URL || 'http://localhost:5000') + '/notices')
+      fetch((import.meta.env.VITE_BACKEND_PORT_URL || 'http://localhost:5000') + '/notices')
         .then(res => res.json())
         .then(data => {
           if (data.success) setNotices(data.notices);

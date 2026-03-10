@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-const BACKEND_PORT_URL = import.meta.env.BACKEND_PORT_URL || 'http://localhost:5000';
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import Note from './component/Note'
@@ -8,6 +7,10 @@ import Login from './pages/login.jsx'
 import Admin from './pages/Admin.jsx'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import ProtectedRoute from './component/ProtectedRoute.jsx'
+import {PropagateLoader} from 'react-spinners'
+import { Suspense, lazy } from "react";
+
+const BACKEND_PORT_URL = import.meta.env.VITE_BACKEND_PORT_URL|| 'http://localhost:5000';
 
 
 
@@ -32,6 +35,7 @@ function App() {
 
   const fetchLinks = async () => {
     try {
+      setLoading(true);
       const res = await fetch(`${BACKEND_PORT_URL}/Links`);
       const data = await res.json();
 
@@ -41,7 +45,9 @@ function App() {
       }
     } catch (err) {
       console.log('Error fetching links:', err);
-    }
+    } finally {
+    setLoading(false);
+  }
   };
 
   const fetchFiles = async () => {
@@ -68,6 +74,15 @@ function App() {
   const usertype = window.localStorage.getItem('usertype')
   const token = window.localStorage.getItem('token')
 
+
+  if (loading) {
+  return (
+    <div className="flex justify-center items-center h-screen">
+      <PropagateLoader color="#862dc4" loading={true} />
+    </div>
+  );
+}
+
   return (
     <>
 
@@ -92,7 +107,7 @@ function App() {
 
             <nav className="bg-purple-600 text-white shadow-lg">
               <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-                <h1 className="text-5xl ml-5 font-bold">Accademy</h1>
+                <h1 className="text-5xl ml-5 font-bold">e-Accademy</h1>
                 {/* Hamburger icon for mobile */}
                 <button
                   className="md:hidden ml-auto focus:outline-none"
@@ -273,7 +288,7 @@ function App() {
             </div>
 
 
-            <form action="https://www.youtube.com/results" className="m-8 relative bottom-8 flex gap-2">
+            <form action="https://www.youtube.com/results" className="m-5 overflow-x-hidden relative bottom-8 flex gap-2">
               <input
                 type="text"
                 placeholder="Search content of youtube..."

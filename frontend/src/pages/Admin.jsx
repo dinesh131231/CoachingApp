@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
-const BACKEND_PORT_URL = import.meta.env.BACKEND_PORT_URL || 'http://localhost:5000';
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import Note from '../component/Note'
+const BACKEND_PORT_URL = import.meta.env.VITE_BACKEND_PORT_URL || 'http://localhost:5000';
 
 function Admin() {
   const [links, setLinks] = useState([]);

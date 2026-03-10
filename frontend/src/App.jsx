@@ -288,7 +288,7 @@ function App() {
             </div>
 
 
-            <form action="https://www.youtube.com/results" className="m-5 w-5/6 flex overflow-x-hidden relative bottom-8 gap-2">
+            <form action="https://www.youtube.com/results" className="m-5 w-5/6 flex relative bottom-8 gap-2">
               <input
                 type="text"
                 placeholder="Search content of youtube..."

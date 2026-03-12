@@ -152,7 +152,7 @@ function App() {
                   >
                     Notice
                   </button>
-                  <button onClick={() => { navigate('/signup'); setNavOpen(false); }}
+                  <button onClick={() => { navigate('/admin'); setNavOpen(false); }}
                     className="bg-red-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-red-700 transition duration-200">
                     Admin
                   </button>

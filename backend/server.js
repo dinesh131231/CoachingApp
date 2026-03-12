@@ -10,6 +10,7 @@ import File from "./models/File.js";
 import fs from "fs";
 import Notice from "./models/Notice.js";
 import userModel from "./userdetail.js";
+import uploadToCloudinary from "./utils/cloudinaryUpload.js";
 
 
 
@@ -23,23 +24,27 @@ const PORT = process.env.PORT|| 5000;
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use("/uploads", express.static("uploads"));
+// app.use("/uploads", express.static("uploads"));
 
 
 // Setup API routes
 setupRoutes(app);
 
 // Multer storage
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/");
-  },
-  filename: (req, file, cb) => {
-    cb(null,file.fieldname + '-' + Date.now() + '-' + path.extname(file.originalname) );
-  },
-});
+const storage = multer.memoryStorage();
 
-const upload = multer({ storage });
+
+
+// const storage = multer.memoryStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, "uploads/");
+//   },
+//   filename: (req, file, cb) => {
+//     cb(null,file.fieldname + '-' + Date.now() + '-' + path.extname(file.originalname) );
+//   },
+// });
+
+const upload = multer({storage: storage, });
 
 app.get("/", (req, res) => {
   res.send("Server is running successfully 🚀");
@@ -53,26 +58,39 @@ app.post("/uploads", upload.single("file"), async (req, res) => {
       return res.status(400).json({ error: "No file uploaded" });
     }
     
+    const result = await uploadToCloudinary(req.file.buffer);
     // Save file metadata to MongoDB
     const fileDoc = new File({
       originalName: req.file.originalname,
-      filename: req.file.filename,
-      path: req.file.path,
+      filename: result.public_id,
+      url: result.secure_url,
       size: req.file.size,
       mimetype: req.file.mimetype,
-      uploader: req.body.uploader || null,
-      questionId: req.body.questionId ? Number(req.body.questionId) : null,
     });
+    // const fileDoc = new File({
+    //   originalName: req.file.originalname,
+    //   filename: req.file.filename,
+    //   path: req.file.path,
+    //   size: req.file.size,
+    //   mimetype: req.file.mimetype,
+    //   uploader: req.body.uploader || null,
+    //   questionId: req.body.questionId ? Number(req.body.questionId) : null,
+    // });
 
     await fileDoc.save();
 
     res.json({
       message: "File uploaded successfully",
-      file: req.file.filename,
-      fileId: fileDoc._id,
+      success: true,
+      fileUrl: result.secure_url,
+      fileId: fileDoc._id
+      
+      // file: req.file.filename,
+      // fileId: fileDoc._id,
       
       
     });
+    console.log(req.file);
     
   } catch (err) {
     console.error("Error saving file metadata:", err);

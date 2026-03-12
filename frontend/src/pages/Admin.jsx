@@ -151,41 +151,6 @@ function Admin() {
   }, [message]);
 
 
-  //   useEffect(() => {
-  //   fetchFiles();
-  // }, []);
-
-  // const fetchFiles = async () => {
-  //   try {
-  //     const res = await axios.get("http://localhost:5000/files");
-  //     setFiles(res.data.data);
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
-
-  // fetchFiles();
-
-  // if (response.ok) {
-  //   setMessage('File uploaded successfully!');
-  //   setFile(null);
-  //   setFileName('');
-  //   fetchFiles(); // ✅ refresh
-  // }
-
-
-  // //delete handeler
-  // const handleDelete = async (id) => {
-  //   if (!window.confirm("Delete this file?")) return;
-
-  //   try {
-  //     await axios.delete(`http://localhost:5000/files/${id}`);
-  //     fetchFiles();
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
-
 
   const navigate = useNavigate()
 
@@ -224,6 +189,7 @@ function Admin() {
 
     const formData = new FormData();
     formData.append("file", file);
+    
 
     try {
       const response = await fetch(`${BACKEND_PORT_URL}/uploads`, {
@@ -262,85 +228,7 @@ function Admin() {
     }
   };
 
-  //   const handleUpload = async (e) => {
-  //     e.preventDefault()
-  //     if (!file) {
-  //       setMessage('Please select a file first')
-  //       return
-  //     }
-
-  //     setUploading(true)
-  //     const formData = new FormData()
-  //     formData.append('file', file)
-  //     // axios.post('http://localhost:5000/upload', formData)
-  //     //  .then(res => console.log(res))
-  //     //  .catch(err => console.error(err))
-
-
-  // //     try {
-  // //   const res = await axios.post("http://localhost:5000/upload", formData);
-  // //   console.log(res.data);
-  // // } catch (err) {
-  // //   console.log(err.response?.data || err.message);
-  // // }
-
-  //     try {
-  //       const response = await fetch('http://localhost:5000/upload', {
-  //         method: 'POST',
-  //         body: formData,
-
-
-  //       })
-
-
-  //       const data = await response.json()
-
-  //       if (response.ok) {
-  //         setMessage('File uploaded successfully!')
-  //         setFile(null)
-  //         setFileName('')
-  //       } else {
-  //         setMessage(data.message || 'Upload failed')
-  //       }
-  //     } catch (err) {
-  //       setMessage('Error uploading file: ' + err.message)
-  //     } finally {
-  //       setUploading(false)
-  //     }
-  //   }
-
-  // const handleNoticeSubmit = async (e) => {
-  //   e.preventDefault()
-  //   if (!notice.trim()) {
-  //     setNoticeMessage('Please enter a notice')
-  //     return
-  //   }
-
-  //   setNoticeLoading(true)
-
-  //   try {
-  //     const response = await fetch('http://localhost:5000/notice', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify({ notice }),
-  //     })
-
-  //     const data = await response.json()
-
-  //     if (response.ok) {
-  //       setNoticeMessage('Notice posted successfully!')
-  //       setNotice('')
-  //     } else {
-  //       setNoticeMessage(data.message || 'Failed to post notice')
-  //     }
-  //   } catch (err) {
-  //     setNoticeMessage('Error posting notice: ' + err.message)
-  //   } finally {
-  //     setNoticeLoading(false)
-  //   }
-  // }
+  
 
 
   const handleDelete = async (id) => {
@@ -389,22 +277,7 @@ function Admin() {
         )}
       </nav>
 
-      {/* Note component for notice preview */}
-      {/* <Note name={
-        <ul className="list-disc pl-5 space-y-2">
-          {notices.map((item) => (
-            <li key={item._id} className="text-gray-800 flex justify-between items-center">
-              <span>{item.text}</span>
-              <button
-                className="ml-4 bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 text-xs"
-                onClick={() => handleNoticeDelete(item._id)}
-              >
-                Delete
-              </button>
-            </li>
-          ))}
-        </ul>
-      } /> */}
+      
 
       <div className="p-8 max-w-7xl mx-auto">
         <div className="flex gap-10 flex-col items-center">

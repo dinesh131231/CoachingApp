@@ -7,10 +7,10 @@ import Login from './pages/login.jsx'
 import Admin from './pages/Admin.jsx'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import ProtectedRoute from './component/ProtectedRoute.jsx'
-import {PropagateLoader} from 'react-spinners'
+import { PropagateLoader } from 'react-spinners'
 import { Suspense, lazy } from "react";
 
-const BACKEND_PORT_URL = import.meta.env.VITE_BACKEND_PORT_URL|| 'http://localhost:5000';
+const BACKEND_PORT_URL = import.meta.env.VITE_BACKEND_PORT_URL || 'http://localhost:5000';
 
 
 
@@ -46,8 +46,8 @@ function App() {
     } catch (err) {
       console.log('Error fetching links:', err);
     } finally {
-    setLoading(false);
-  }
+      setLoading(false);
+    }
   };
 
   const fetchFiles = async () => {
@@ -76,12 +76,17 @@ function App() {
 
 
   if (loading) {
-  return (
-    <div className="flex justify-center items-center h-screen">
-      <PropagateLoader color="#862dc4" loading={true} />
-    </div>
-  );
-}
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <PropagateLoader color="#862dc4" loading={true} />
+      </div>
+    );
+  }
+  const isImage = (url) => {
+    const ext = url.split(".").pop().toLowerCase();
+    return ["jpg", "jpeg", "png", "gif", "webp", "bmp", "svg"].includes(ext);
+  };
+
 
   return (
     <>
@@ -126,7 +131,7 @@ function App() {
                   >
                     Notice
                   </button>
-                  <button onClick={() => navigate('/signup')}
+                  <button onClick={() => navigate('/admin')}
                     className="bg-red-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-red-700 transition duration-200">
                     Admin
                   </button>
@@ -178,9 +183,11 @@ function App() {
 
 
               {/* Files Grid Cards */}
-              <div className="grid grid-cols-1 text-center sm:grid-cols-2 md:grid-cols-3 lg:grid-col-4 gap-6">
+              <div className="grid grid-cols-1 text-center sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {files && files.length > 0 ? (
                   files.map((file) => (
+
+
                     <div
                       key={file._id}
                       onClick={() => setSelectedFile(file)}
@@ -188,11 +195,40 @@ function App() {
                     >
                       {/* Square Card Container */}
                       <div className="w-full h-20 bg-gray-100  items-center justify-center overflow-hidden relative hidden">
+
+                        {/* {selectedFile.url.endsWith(".pdf")?(
+
+
+                      <iframe
+                        src={selectedFile.url}
+                        alt={selectedFile.originalName}
+                        className="max-w-full max-h-full "
+                        // src={`${BACKEND_PORT_URL}/${selectedFile.path.replace(/\\/g, "/")}`}
+                        // alt="file"
+                        // className="w-full h-full border-0"
+                        onError={(e) => {
+                          e.target.src =
+                            'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="50" y="50" text-anchor="middle" dy=".3em">File not found</text></svg>';
+                        }}
+                      />):(
+                        <img
+                        src={selectedFile.url}
+                        alt={selectedFile.originalName}
+                        className="max-w-full max-h-full "
+                        // src={`${BACKEND_PORT_URL}/${selectedFile.path.replace(/\\/g, "/")}`}
+                        // alt="file"
+                        // className="w-full h-full border-0"
+                        />
+                      )} */}
                         <iframe
-                          src={`${BACKEND_PORT_URL}/${file.path.replace(/\\/g, "/")}`}
-                          alt="file"
-                          className="w-auto h-auto object-fill  hover:scale-105 transition-transform"
+                          src={file.url}
+                          alt={file.originalName}
+                          className="w-auto h-auto object-cover hover:scale-105 transition-transform"
+                        // src={`${BACKEND_PORT_URL}/${file.path.replace(/\\/g, "/")}`}
+                        // alt="file"
+                        // className="w-auto h-auto object-fill  hover:scale-105 transition-transform"
                         ></iframe>
+                        {console.log(selectedFile)}
                       </div>
                       {/* Card Footer with File Name */}
                       <div className="p-4">
@@ -209,8 +245,9 @@ function App() {
                   </div>
                 )}
               </div>
-              
+
               {/* Modal for Selected File */}
+
               {selectedFile && (
                 <div
                   className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
@@ -225,7 +262,7 @@ function App() {
                       <div>
 
                         <h2 className="text-2xl font-bold text-gray-800">{selectedFile.originalName}</h2>
-                        <p className="text-sm text-gray-500 mt-1">Path: {selectedFile.path}</p>
+                        {/* <p className="text-sm text-gray-500 mt-1">Path: {selectedFile.path}</p> */}
                       </div>
                       <button
                         onClick={() => setSelectedFile(null)}
@@ -237,21 +274,64 @@ function App() {
 
                     {/* Modal Content - File Display */}
                     <div className="flex-1 w-full h-full overflow-hidden flex items-center justify-center">
+                      {isImage(selectedFile.url) ? (
+                        <img
+                          src={selectedFile.url}
+                          alt={selectedFile.originalName}
+                          className="max-w-full max-h-full"
+                          onError={(e) => {
+                            e.target.src =
+                              'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 100"><text x="50%" y="50%" text-anchor="middle" dy=".3em">Image not found</text></svg>';
+                          }}
+                        />
+                      ) : (
+                        <iframe
+                          src={selectedFile.url}
+                          title={selectedFile.originalName}
+                          className="w-full h-[600px]"
+                          onError={(e) => {
+                            e.target.src =
+                              'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 100"><text x="50%" y="50%" text-anchor="middle" dy=".3em">File not found</text></svg>';
+                          }}
+                        />
+                      )}
 
-                      <iframe
-                        src={`${BACKEND_PORT_URL}/${selectedFile.path.replace(/\\/g, "/")}`}
-                        alt="file"
-                        className="w-full h-full border-0"
-                        onError={(e) => {
-                          e.target.src =
-                            'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="50" y="50" text-anchor="middle" dy=".3em">File not found</text></svg>';
-                        }}
-                      />
+
+                      {/* {selectedFile.url.endsWith(".pdf") ? (
+
+
+                        <iframe
+                          src={selectedFile.url}
+                          alt={selectedFile.originalName}
+                          className="max-w-full max-h-full "
+                          // src={`${BACKEND_PORT_URL}/${selectedFile.path.replace(/\\/g, "/")}`}
+                          // alt="file"
+                          // className="w-full h-full border-0"
+                          onError={(e) => {
+                            e.target.src =
+                              'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="50" y="50" text-anchor="middle" dy=".3em">File not found</text></svg>';
+                          }}
+                        />) : (
+                        <img
+                          src={selectedFile.url}
+                          alt={selectedFile.originalName}
+                          className="max-w-full max-h-full "
+                        // src={`${BACKEND_PORT_URL}/${selectedFile.path.replace(/\\/g, "/")}`}
+                        // alt="file"
+                        // className="w-full h-full border-0"
+                        />
+                      )} */}
                     </div>
 
                     {/* Modal Footer */}
-                    <div className="p-4 border-t flex justify-between items-center">
-                      <p className="text-sm text-gray-600">Size: {(selectedFile.size / 1024).toFixed(2)} KB</p>
+                    <div className="p-4 border-t flex justify-end gap-4">
+                      {/* <p className="text-sm text-gray-600">Size: {(selectedFile.size / 1024).toFixed(2)} KB</p> */}
+                      <a
+                        href={`${selectedFile.url}?fl_attachment=true`}
+                        className="bg-purple-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-purple-700 transition duration-200"
+                      >
+                        Download
+                      </a>
                       <button
                         onClick={() => setSelectedFile(null)}
                         className="bg-purple-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-purple-700 transition duration-200"
@@ -288,7 +368,7 @@ function App() {
             </div>
 
 
-            <form action="https://www.youtube.com/results" className="m-5 w-5/6 flex relative bottom-8 gap-2">
+            <form action="https://www.youtube.com/results" className="m-5 w-5/6 flex relative bottom-8 gap-2 p-0">
               <input
                 type="text"
                 placeholder="Search content of youtube..."
@@ -299,7 +379,7 @@ function App() {
               />
               <button
                 type="submit"
-                className="bg-red-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-red-800 transition duration-200"
+                className="bg-red-600 text-white font-semibold rounded-lg hover:bg-red-800 transition duration-200 text-sm w-auto p-2 text-center"
               >
                 YouTube
               </button>

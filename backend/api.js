@@ -1,14 +1,13 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
-import multer from "multer";
 import userModel from "./userdetail.js";
 import express from "express";
 import path from "path";
 import File from "./models/File.js";
 import Notice from "./models/Notice.js";
-import fs from "fs";
 import Link from "./models/Link.js";
 import jwt from "jsonwebtoken";
+import { v2 as cloudinary } from "cloudinary";
 
 
 // NOTICE ENDPOINTS
@@ -207,7 +206,7 @@ export const setupRoutes = (app) => {
           role: foundUser.role
         },
         process.env.JWT_SECRET || 'your_jwt_secret',
-        { expiresIn: '30m' }
+        { expiresIn: '2d' }
       );
 
       return res.status(200).json({
@@ -236,7 +235,7 @@ export const setupRoutes = (app) => {
     // GET all files (id + path)
     app.get("/files", async (req, res) => {
       try {
-        const files = await File.find({}, { f_id: 1, path: 1, originalName: 1 });
+        const files = await File.find({}, { f_id: 1, url: 1, originalName: 1 });
 
         res.status(200).json({
           success: true,
@@ -275,28 +274,61 @@ export const setupRoutes = (app) => {
       }
     });
 
+app.delete("/files/:id", async (req, res) => {
+  try {
+    const file = await File.findById(req.params.id);
 
-    app.delete("/files/:id", async (req, res) => {
-      try {
-        const file = await File.findById(req.params.id);
+    if (!file) {
+      return res.status(404).json({
+        success: false,
+        message: "File not found",
+      });
+    }
 
-        if (!file) {
-          return res.status(404).json({ success: false, message: "File not found" });
-        }
-
-        // delete from disk
-        if (fs.existsSync(file.path)) {
-          fs.unlinkSync(file.path);
-        }
-
-        // delete from db
-        await file.deleteOne();
-
-        res.json({ success: true, message: "File deleted" });
-      } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-      }
+    // delete from Cloudinary
+    await cloudinary.uploader.destroy(file.filename, {
+      resource_type: "raw", // needed for pdf, doc etc
     });
+
+    // delete from MongoDB
+    await file.deleteOne();
+
+    res.json({
+      success: true,
+      message: "File deleted successfully",
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+});
+
+
+    // app.delete("/files/:id", async (req, res) => {
+    //   try {
+    //     const file = await File.findById(req.params.id);
+
+    //     if (!file) {
+    //       return res.status(404).json({ success: false, message: "File not found" });
+    //     }
+
+    //     // delete from disk
+    //     if (fs.existsSync(file.path)) {
+    //       fs.unlinkSync(file.path);
+    //     }
+
+    //     // delete from db
+    //     await file.deleteOne();
+
+    //     res.json({ success: true, message: "File deleted" });
+    //   } catch (err) {
+    //     res.status(500).json({ success: false, message: err.message });
+    //   }
+    // });
 
     // notices delete
     app.get("/notices", async (req, res) => {
